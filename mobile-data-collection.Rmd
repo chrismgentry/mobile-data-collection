@@ -82,6 +82,13 @@ Each **colab notebook** is separated into _code cells_ and _text cells_. A code 
 
 <p align="center"><img src= "images/colab_main.png" alt="Google Colab Page View" style="width:100%"></p>
 <br>
+
+For the purposes of this exercise you will want to set the runtime type to **R**. To do this click "Runtime > Change runtime type" from the menu bar and change the run type to **R**. For quick access you can bookmark this link https://colab.research.google.com/#create=true&language=r which will automatically set the runtime type to R when creating a new notebook.
+
+<p align="center"><img src= "images/colab_change_runtime.png" alt="Google Colab Page View" style="width:100%"></p>
+<br>
+
+
 Each time you open these colab notebooks, or if you have not interacted with the notebook for an extended period of time, you will need to make sure the environment is connected and all of the sample script has been run. To do this go to _Runtime > Run all_ and run the notebook. This may take a moment to complete so be patient until the last code cell has been executed. You should see a green check mark with an allocation of RAM and Disk as shown by horizontal bars which will indicate you are connected. In each section of code there is a **Run cell** &nbsp;<img src= "Images/r-colab-run-code.png" alt="Run cell button" width="15" height="15"> button that will allow you to run the individual code cells. This button will have a rotating loading symbol <img src= "Images/r-colab-loading.png" alt="Run cell button" width="15" height="15"> while the code cell is being executed. Once it is complete the box will return to the run state and there may be an output visible depending on the script. You can add your own text or code cells to a notebook simply by moving your cursor slowly over the notebook to reveal the code/text option bar or by going to _Insert > Code cell/Text cell_.
 
 <p align="center"><img src= "Images/r-colab-code-text.png" alt="Adding Text or Code Blocks" style="width:100%"></p>
@@ -144,7 +151,7 @@ To begin recording data, click on the preview button (eye) to view the form and 
 
 Alternatively you can click the **Send** button in the upper-right of the form and create a direct link to the form.
 
-<p align="center"><img src= "images/google_form_link.png" alt="Creating a Google Form link" style="width:100%"></p>
+<p align="center"><img src= "images/google_form_link.png" alt="Creating a Google Form link" style="width:50%"></p>
 <br>
 
 ## Google Sheets
