@@ -1,0 +1,282 @@
+---
+title: "Mobile Data Collection <br><small>BIOL 5660, Advanced Data Analytics</small></br>"
+author: "Austin Peay State University"
+output:
+  html_document:
+    toc: yes
+    toc_float: true
+    collapsed: no
+    smooth_scroll: yes
+    df_print: paged
+  pdf_document: default
+  html_notebook:
+    df_print: paged
+    rows.print: 10
+    theme: cosmo
+    highlight: breezedark
+    number_sections: yes
+    toc: yes
+    toc_float: 
+      collapsed: no
+      smooth_scroll: yes
+editor_options:
+  chunk_output_type: inline
+  mode: gfm
+---
+
+```{=html}
+<style type="text/css">
+
+h1.title {
+  font-size: 40px;
+  font-family: "Times New Roman", Times, serif;
+  color: Black;
+  text-align: center;
+}
+
+h4.author { /* Header 4 - and the author and data headers use this too  */
+  font-size: 25px;
+  font-family: "Times New Roman", Times, serif;
+  font-weight: bold;
+  color: #D02349;
+  text-align: center;
+}
+
+body {
+  font-family: Helvetica;
+  font-size: 12pt;
+}
+
+.zoom {
+  transform-origin: 40% 50% 0;
+  transition: transform .2s;
+  margin: 0 auto;
+}
+.zoom img{
+	width:auto;
+	height:auto;	
+}
+.zoom:hover {
+  transform: scale(2);
+}
+
+th, td {padding: 5px;}
+
+</style>
+```
+# Mobile Data Collection
+
+For scientists that perform field work, the management of data from notes and photos to collections and samples requires careful planning to ensure that your time in the field is productive. Travel costs, equipment, personnel time, etc. can be costly meaning that in some cases you might only have one chance at capturing the necessary data for your research. In order to make field work and data collection more efficient, there are products like [ESRI's ArcGIS Survey 123](https://www.esri.com/en-us/arcgis/products/arcgis-survey123/overview) or the [Open Data Kit (ODK)](https://docs.getodk.org/getting-started/). These tools allow users to develop forms for data collection on mobile devices that can be stored locally as well as uploaded to the cloud. In the case of the ESRI software, it can be connected to the ArcGIS Online ecosystem or products which allows for near real-time viewing of collected data. Unfortunately there is a subscription fee for these types of products, or in the case of ODK, the free version requires a significant amount of set-up and server hosting. This simply isn't an option for most.
+
+Thankfully, there are some other potential options available that with a little scripting in R make mobile data collection possible for nearly anyone with a [Google](https://www.google.com) Account. For this exercise you will use several Google based products including [Maps](https://www.google.com/maps/), [Forms](https://docs.google.com/forms/), [Sheets](https://docs.google.com/spreadsheets/), and a product you might not be familiar with [Colaboratory](https://colab.research.google.com/). These products provide mobile, offline, accessible data collection that only requires a Google account.
+
+## Google Colaboratory Executable Environment
+
+The [Google Colaboratory](https://colab.research.google.com/), or _"colab"_ for short, is based on the popular Jupyter Notebook and allows you to write and execute **R** or _Python_ code in your browser, with:
+
+- Zero configuration required
+- Free access to GPUs
+- Easy sharing
+
+Each **colab notebook** is separated into _code cells_ and _text cells_. A code cell is used to write and execute a script interactively. Each text cell uses simple [markdown](https://www.markdownguide.org/) syntax for creating plain text information. You can easily share the notebook like other Google Drive based documents by clicking the "Share" link in the upper right-hand portion of the window.
+
+<p align="center"><img src= "images/colab_main.png" alt="Google Colab Page View" style="width:100%"></p>
+<br>
+Each time you open these colab notebooks, or if you have not interacted with the notebook for an extended period of time, you will need to make sure the environment is connected and all of the sample script has been run. To do this go to _Runtime > Run all_ and run the notebook. This may take a moment to complete so be patient until the last code cell has been executed. You should see a green check mark with an allocation of RAM and Disk as shown by horizontal bars which will indicate you are connected. In each section of code there is a **Run cell** &nbsp;<img src= "Images/r-colab-run-code.png" alt="Run cell button" width="15" height="15"> button that will allow you to run the individual code cells. This button will have a rotating loading symbol <img src= "Images/r-colab-loading.png" alt="Run cell button" width="15" height="15"> while the code cell is being executed. Once it is complete the box will return to the run state and there may be an output visible depending on the script. You can add your own text or code cells to a notebook simply by moving your cursor slowly over the notebook to reveal the code/text option bar or by going to _Insert > Code cell/Text cell_.
+
+<p align="center"><img src= "Images/r-colab-code-text.png" alt="Adding Text or Code Blocks" style="width:100%"></p>
+<br>
+By clicking within each code or text cell you can edit the contains and adjust the properties using the various preset option controls.
+
+<p align="center"><img src= "Images/r-colab-block-settings.png" alt="Edit block properties" style="width:100%"></p>
+<br>
+You should practice adding and removing cells, editing their content, and rearranging the order of the cells. This will help familiarize you with notebook tools and allow you to manipulate your notebook in this exercise or similar jupyter-style notebooks in the future.
+
+While we are introducing Colab here in this exercise, I would not necessarily recommend it as a permanent space for your scripting needs. While it does provide some advantages over other software, the slow loading times for atypical packages is a considerable drawback over local operations in R/RStudio. However, because it only requires a chrome browser, Colab can be run on most any device including phones, tablets, and computers regardless of the operating system.
+
+## Google Maps
+
+Google maps is likely your go-to app or website for directions or even just browsing an area for restaurants, hotels, attractions, etc. On the mobile application you have the availability to download an area for offline viewing when a data connection isn't possible. By clicking on your avatar on maps (generally in the upper right corner) you will access the settings menu and should see an options for _Offline Maps_.
+
+<p align="center"><img src= "images/maps_offline.png" alt="Accessing Offline Maps" style="width:50%"></p>
+<br>
+
+This will allow you to select and download your own area of interest (AOI). After navigating to the area you would like to download, click on _Offline Maps_ and click **Select Your Own Map** to zoom to your final AOI.
+
+<p align="center"><img src= "images/maps_offline_download.png" alt="Downloading Offline Maps" style="width:50%"></p>
+<br>
+
+Once you have the area selected, download the information to your mobile device for offline access.
+
+## Google Forms
+
+While you have likely completed a form created in Google Forms you might not have created one yourself. Like other Google Doc products, forms uses simple drop-down menus and clickable toolbars to create the various components of the form. The responses are stored within the forms itself or can be linked to a Google Sheet (spreadsheet similar to Excel). Starting with a blank form, use the drop-down on the right to select between the following options to start developing the fields for your form: 
+
+- Short Answer
+- Paragraph
+- Multiple Choice
+- Checkboxes
+- Dropdown
+- File Upload
+- Linear Scale
+- Multiple Choice Grid
+- Checkbox Grid
+- Date
+- Time
+
+<p align="center"><img src= "images/google_form_blank.png" alt="Google Forms Homepage" style="width:100%"></p>
+<br>
+
+For the final two options, you will find that the values stored in Sheets contains a column for "timestamp". So unless you are recording a different time (such as race times) or dates (like birth or death dates) you may not need to utilize those options.
+
+<p align="center"><img src= "images/google_form_home.png" alt="Editing Google Forms" style="width:100%"></p>
+<br>
+
+Once your form is complete with all of the necessary fields for your particular study, click the _Responses_ tab at the top of the page, and click **Link to Sheets** in order to set-up the connected spreadsheet. Give it the same name as the form in case you develop several forms you can easily identify the responses.
+
+<p align="center"><img src= "images/google_form_responses.png" alt="Editing Google Forms" style="width:100%"></p>
+<br>
+
+To begin recording data, click on the preview button (eye) to view the form and add data. 
+
+<p align="center"><img src= "images/google_form_preview.png" alt="Accessing the Google Form" style="width:100%"></p>
+<br>
+
+Alternatively you can click the **Send** button in the upper-right of the form and create a direct link to the form.
+
+<p align="center"><img src= "images/google_form_link.png" alt="Creating a Google Form link" style="width:100%"></p>
+<br>
+
+## Google Sheets
+
+In your Google Drive you will find the Google Sheet set as the response page to the form you created. Each of the records will be contained in a single row, time stamped, and the information recorded into the appropriate columns. 
+
+<p align="center"><img src= "images/google_sheets.png" alt="Google Sheet of Responses" style="width:100%"></p>
+<br>
+
+In order to make any sheet available for this type of data collection or sharing of any sort you need to provide access to other users. In the upper-right hand of the page you will see a share button. Click the button and in the resulting window select "Anyone with the link" from the general access drop-down menu. You can choose _viewer_, _commentor_, or _editor_ based on the needs of the project or preferred level of privacy. 
+
+<p align="center"><img src= "images/google_sheets_permissions.png" alt="Selecting sharing and permissions in Google Sheets" style="width:50%"></p>
+<br>
+
+To obtain access to the form in **R**, you will need to collect the unique _File ID_ contained within the URL. The ID will be a alphanumeric string immediately after the .../spreadsheets/d/... portion of the URL. This information will be included in the script to allow the information to be downloaded as a \*.csv for mapping.
+
+<p align="center"><img src= "images/google_sheets_link.png" alt="Finding the Google Sheets unique ID" style="width:100%"></p>
+<br>
+
+Finally, just in case you are in an area without WiFi or cellular coverage, you can go to _File > Make Available Offline_ to ensure that you have access to the underlying spreadsheet since Google Forms currently doesn't support offline use. While the form is useful for data input, you can always edit the spreadsheet directly to provide information, correct mistakes, add missing data, etc.
+
+<p align="center"><img src= "images/google_sheets_offline.png" alt="Offline access in Google Sheets" style="width:100%"></p>
+<br>
+
+# Setting Up The Data Collection Ecosystem
+
+With your form complete, the linked spreadsheet created and offline capable, and your AOI downloaded for offline use, you can now begin to collect your field data. There are various ways to accomplish this task using this workflow so for this example you will use the most direct method that assumes your mobile device has access to WiFi or cellular service. 
+
+## Google Maps
+
+Collecting longitude and latitude information on Google Maps is relatively straightforward. You begin by clicking the icon to zoom to your location. On Android it looks like a bullseye or target and on iOS it looks more like a paper airplane. This will move the screen to your current location. If you press and hold on the central point, longitude and latitude coordinates will appear.
+
+<p align="center"><img src= "images/mobile_maps_example.png" alt="Collecting point data with Google Maps" style="width:100%"></p>
+<br>
+
+On iOS you may need to pull the notification shade up to see the coordinates. Once you see the longitude and latitude information you can click on it to copy it to your clipboard for pasting into the form or spreadsheet. On Android, the longitude and latitude will be displayed in the search bar. You can copy directly from there for pasting into the form or spreadsheet.
+
+If you are collecting data from known points, locating points of interest to include in a form, or correcting data while on a PC or Mac, you can open a Chrome browser, right or control click and the coordinate information will be displayed. Clicking on it will copy the information to your clipboard to pasting to other locations
+
+<p align="center"><img src= "images/chrome_maps_example.png" alt="Collecting point data with Google Maps on Chrome" style="width:100%"></p>
+<br>
+
+## Google Colab
+
+Once you have collected your data it's time to map the information. While you could create static maps using `ggplot2()`, an interactive map in `leaflet` will allow you to visualize the information with pop-ups and description labels which helps to quickly identify characteristics of your data. Just like working in **R** you `install.packages()`, load libraries `library()`, and write various functions to perform analyses or visualizations. The slight difference is these actions occur in designated code blocks while your text descriptions occur in designated text blocks as described in the [section above](https://chrismgentry.github.io/mobile-data-collection/#11_Google_Colaboratory_Executable_Environment).
+
+For this exercise you will need the following packages:
+
+- `tidyverse`
+- `leaflet`
+- `htmlwidgets`
+- `googledrive`
+
+The `tidyverse` and `googledrive` packages are already pre-installed so you only need to load those libraries. `leaflet` and `htmlwidgets` need to be installed and loaded before you can use them in Colab. One of the downsides to Colab is these libraries will need to be installed and/or loaded each time you return to the document. Once your connection is lost, whether through timing out or closing the page, you will need to reconnect and install/reload all of the packages and data. You will also lose any saved output. However, because the processing happens on Google servers versus locally, some processes will actually run faster in Colab than on a PC or Mac. 
+
+For this exercise we'll begin by installing and loading the necessary packages. Note, because you should be using Colab for this exercise none of the following scripts will be executable but they will be in code blocks for easy copy and paste.
+
+```
+#Installing packages may take as long as 10min
+packages<-c("leaflet", "htmlwidgets")
+sapply(packages, install.packages, character.only=TRUE)
+sapply(packages, require, character.only=TRUE)
+```
+
+Once these packages are installed and loaded you can load the remaining libraries.
+
+```
+#load pre-installed packages
+library('tidyverse')
+library('googledrive')
+```
+
+The functions in the `googledrive` package used to obtain the file is `drive_download()`. However, unless you want to authorize a connect to your personal Google Drive space you will need to first run `drive_deauth()` to keep it from asking for a username and password. This is also why it is important to make sure your sheet is set for sharing to ensure ease of access.
+
+```
+#google sheet to csv
+drive_deauth()
+drive_download(as_id("INSERT YOUR UNIQUE FILE ID HERE"), overwrite = TRUE, type = "csv")
+demo <- as.data.frame(read.csv("INSERT FILE NAME HERE.csv")) %>% drop_na(c("Longitude","Latitude"))
+```
+
+In the script above, you may need to alter the longitude and latitude call `drop_na()` at the end if you called those columns something different such as x,y or used lowercase. You can remove it all together if information without locations is acceptable; although this will cause issues in your visualization. Also feel free to change the name of the object if you wish. Just be sure that you change it throughout the script so your code will operate correctly. The other parts of the script you might not be familiar with are:
+
+- overwrite = TRUE, which allows you to continuously overwrite the data when the spreadsheet is updated
+- type = "csv", which sets the type of data being downloaded
+- as.data.frame(), converts the \*.csv file to a dataframe for display in `ggplot()` or `leaflet()`
+
+You can view your dataset with `head()` to examine the information and perform some quick QA/QC.
+
+Now that your data is converted to an object in Colab you can use script similar to the [previous exercise](https://chrismgentry.github.io/Mapping-Basics/#Interactive_Maps) to view it with `leaflet`.
+
+```
+#leaflet - needs to be downloaded and opened in a browser
+html <- demo %>%
+      leaflet() %>%
+      addTiles(group = "OSM")%>%
+        addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
+        addProviderTiles(providers$Esri.NatGeoWorldMap, group = "NatGeo") %>%
+        addProviderTiles(providers$Esri.WorldImagery, group = "ESRI") %>%
+      addCircleMarkers(popup = demo$Species,
+                       label = demo$DBH,
+                       radius = demo$DBH,
+                       color = "grey",
+                       fillColor = "red",
+                       fillOpacity = 0.7,
+                       labelOptions = labelOptions(noHide = T, direction = "bottom", 
+                                                   offset=c(0,-20), textOnly = TRUE)) %>%
+      addLayersControl(
+        baseGroups = c("OSM", "CartoDB", "NatGeo", "ESRI"),
+        options = layersControlOptions(collapsed = FALSE),
+        overlayGroups = "Trees") %>%
+      addMiniMap(zoomLevelOffset = -4) %>%
+      addScaleBar()
+saveWidget(html, file = "biol_5660_demo.html")
+```
+
+Because there is no simple way in **R** to view an \*.html document (they must be opened in various viewers or containers) you will need to download and open the document in a browser. To do this you simply click on the folder icon on the left-side navigation panel in Colab. This will open a side panel and allow you to download the html document for viewing in the browser of your choice. To close this panel, click on the folder one more time.
+
+<p align="center"><img src= "images/colab_download_html.png" alt="Downloading the Leaflet HTML output" style="width:100%"></p>
+<br>
+
+After downloading, open the file in the browser of your choice to view the interactive map.
+
+<p align="center"><img src= "images/colab_html_output.png" alt="Viewing the Leaflet HTML output" style="width:100%"></p>
+<br>
+
+# Your Turn
+
+Using the skills discussed in this exercise, create the following:
+
+- Google Form for data collection
+- Google Sheet for data storage
+- Colab document to write the script to produce the html document
+
+Using Google Maps, you should walk around campus or your neighborhood collecting a dataset for this collection. For example, on campus you could collect information on the blue phones and provide details about their locations such as latitude and longitude, nearest building, etc. You could also map out trees, stop signs, handicap ramps, etc.  Create a map for this project and upload it to your GitHub repository for this exercise (remember to rename it index.html). You should also add your Colab file (\*.ipynb), a link to your form, and link to your sheet to your repository. These files can be viewed (not executed) in GitHub so you can display all of the files prior to displaying your final map.

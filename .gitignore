@@ -8,6 +8,11 @@
 
 # User-specific files
 .Ruserdata
+*.Rproj
+*.gform
+*.gsheet
+*.nb.html
+previous_index.html
 
 # Example code in package build process
 *-Ex.R
@@ -20,6 +25,7 @@
 
 # RStudio files
 .Rproj.user/
+images/
 
 # produced vignettes
 vignettes/*.html
